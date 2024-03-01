@@ -12,4 +12,5 @@ model user {
   name String?
   email String @db.VarChar(255)
   password String @db.VarChar(255)
+  roles     String[] @default(["user"]) // faciliates multiple role for single user
 }
