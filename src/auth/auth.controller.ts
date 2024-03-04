@@ -25,7 +25,7 @@ export class AuthController {
 
   @UseGuards(AuthGuard, RolesGuard)
   @Post('profile')
-  @Roles(['admins'])
+  @Roles(['admin'])
   getUserProfile(@Req() request: Request): Promise<userProfileResponseArgs> {
     return this.authService.getUserProfile(request);
   }
