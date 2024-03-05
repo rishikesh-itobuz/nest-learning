@@ -5,6 +5,7 @@ import { HttpException, HttpStatus, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
   const configService = app.get(ConfigService);
   const port = configService.get('PORT');
   app.useGlobalPipes(
@@ -20,5 +21,6 @@ async function bootstrap() {
   );
   await app.listen(port);
   console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Graphq server running at http://localhost:${port}/graphql`);
 }
 bootstrap();

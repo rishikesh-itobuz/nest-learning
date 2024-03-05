@@ -4,6 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
@@ -11,9 +12,10 @@ import { Request } from 'express';
 export class AuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+  async canActivate(context: GqlExecutionContext): Promise<boolean> {
+    const ctx = GqlExecutionContext.create(context);
+    // const request = context.switchToHttp().getRequest();
+    const token = ctx.getArgByIndex(2).req.headers.authorization.split(' ')[1];
     if (!token) {
       throw new UnauthorizedException();
     }
@@ -23,7 +25,7 @@ export class AuthGuard implements CanActivate {
       });
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      request['user'] = payload;
+      ctx.getArgByIndex(2).req['user'] = payload;
     } catch {
       throw new UnauthorizedException();
     }
